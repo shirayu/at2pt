@@ -25,6 +25,11 @@ func TestConvertKNP(t *testing.T) {
 			gold:  "knp_test/tokenized_gold.txt",
 			mode:  TOKENIZED,
 		},
+		{
+			input: "knp_test/input.knp",
+			gold:  "knp_test/func_tokenized_gold.txt",
+			mode:  FUNC_TOKENIZED,
+		},
 	}
 
 	for _, test := range tests {
