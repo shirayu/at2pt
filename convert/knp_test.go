@@ -17,6 +17,11 @@ func TestConvertKNP(t *testing.T) {
 	}{
 		{
 			input: "knp_test/input.knp",
+			gold:  "knp_test/plain_gold.txt",
+			mode:  PLAIN,
+		},
+		{
+			input: "knp_test/input.knp",
 			gold:  "knp_test/tokenized_gold.txt",
 			mode:  TOKENIZED,
 		},
