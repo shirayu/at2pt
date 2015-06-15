@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func ConvertCaboCha(infile *os.File, outfile *os.File, tokenize bool) (err error) {
+func ConvertCaboCha(infile *os.File, outfile *os.File, mode Mode) (err error) {
 
 	//file open
 	r := bufio.NewReader(infile)
@@ -24,7 +24,7 @@ func ConvertCaboCha(infile *os.File, outfile *os.File, tokenize bool) (err error
 			first_token = true
 		} else if strings.HasPrefix(line, "* ") {
 		} else {
-			if tokenize {
+			if mode == TOKENIZED {
 				if first_token {
 					first_token = false
 				} else {

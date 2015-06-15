@@ -36,8 +36,8 @@ type cmdOptions struct {
 	Input  string `short:"i" long:"input" description:"Input file name. - or no designation means STDIN" default:"-"`
 	Output string `short:"o" long:"output" description:"Output file name. - or no designation means STDOUT" default:"-"`
 	//     Log      bool   `long:"log" description:"Enable logging" default:"false"`
-	Tokenize bool   `short:"t" long:"tokenize" description:"Enable tokenzize mode" default:"false"`
-	Style    string `short:"s" long:"style" description:"Input file style {KNP, MeCab, CaboCha}" default:"KNP"`
+	Mode  convert.Mode `short:"m" long:"mode" description:"Mode {0:PLAIN, 1:TOKENIZED}" default:"0"`
+	Style string       `short:"s" long:"style" description:"Input file style {KNP, MeCab, CaboCha}" default:"KNP"`
 }
 
 func main() {
@@ -48,10 +48,10 @@ func main() {
 	optparser.Parse()
 
 	//show help
-	if len(os.Args) == 1 {
-		optparser.WriteHelp(os.Stdout)
-		os.Exit(0)
-	}
+	//     if len(os.Args) == 1 {
+	//         optparser.WriteHelp(os.Stdout)
+	//         os.Exit(0)
+	//     }
 	for _, arg := range os.Args {
 		if arg == "-h" {
 			os.Exit(0)
@@ -63,11 +63,11 @@ func main() {
 		defer inf.Close()
 		defer outf.Close()
 		if strings.ToLower(opts.Style) == "knp" {
-			err = convert.ConvertKNP(inf, outf, opts.Tokenize)
+			err = convert.ConvertKNP(inf, outf, opts.Mode)
 		} else if strings.ToLower(opts.Style) == "cabocha" {
-			err = convert.ConvertCaboCha(inf, outf, opts.Tokenize)
+			err = convert.ConvertCaboCha(inf, outf, opts.Mode)
 		} else if strings.ToLower(opts.Style) == "mecab" {
-			err = convert.ConvertCaboCha(inf, outf, opts.Tokenize)
+			err = convert.ConvertCaboCha(inf, outf, opts.Mode)
 		} else {
 			fmt.Fprintf(os.Stderr, "Unknown style: %s\n", opts.Style)
 			os.Exit(1)

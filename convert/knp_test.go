@@ -11,14 +11,14 @@ import (
 
 func TestConvertKNP(t *testing.T) {
 	tests := []struct {
-		input    string
-		gold     string
-		tokenize bool
+		input string
+		gold  string
+		mode  Mode
 	}{
 		{
-			input:    "knp_test/input.knp",
-			gold:     "knp_test/tokenized_gold.txt",
-			tokenize: true,
+			input: "knp_test/input.knp",
+			gold:  "knp_test/tokenized_gold.txt",
+			mode:  TOKENIZED,
 		},
 	}
 
@@ -36,7 +36,7 @@ func TestConvertKNP(t *testing.T) {
 		r, w, _ := os.Pipe()
 		os.Stdout = w
 
-		err = ConvertKNP(inf, os.Stdout, test.tokenize)
+		err = ConvertKNP(inf, os.Stdout, test.mode)
 		if err != nil {
 			t.Errorf("Error: %s", err)
 			return

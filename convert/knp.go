@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func ConvertKNP(infile *os.File, outfile *os.File, tokenize bool) (err error) {
+func ConvertKNP(infile *os.File, outfile *os.File, mode Mode) (err error) {
 
 	//file open
 	reader := bufio.NewReader(infile)
@@ -27,9 +27,10 @@ func ConvertKNP(infile *os.File, outfile *os.File, tokenize bool) (err error) {
 			if len(doc) != 0 {
 				var plainLine string
 				var myerr error
-				if tokenize {
+				switch mode {
+				case TOKENIZED:
 					plainLine, myerr = ParseKNPTokenized(doc)
-				} else {
+				default:
 					plainLine, myerr = ParseKNP(doc)
 				}
 
