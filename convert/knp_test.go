@@ -11,9 +11,9 @@ import (
 
 func TestWritePlainText(t *testing.T) {
 
-	inf, err := os.Open("../test/input.knp")
+	inf, err := os.Open("knp_test/input.knp")
 	if err != nil {
-		t.Errorf("Error: %s")
+		t.Errorf("Error: %v", err)
 		return
 	}
 	defer inf.Close()
@@ -44,10 +44,10 @@ func TestWritePlainText(t *testing.T) {
 	gotStdout := <-outC
 
 	//get golds
-	goldf, err := os.Open("../test/gold.txt")
+	goldf, err := os.Open("knp_test/gold.txt")
 	gold_reader := bufio.NewReader(goldf)
 	if err != nil {
-		t.Errorf("Error when open the gold file: %s", err)
+		t.Errorf("Error when open the gold file: %v", err)
 		return
 	}
 
