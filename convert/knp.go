@@ -60,7 +60,10 @@ func ConvertKNP(infile *os.File, outfile *os.File, mode Mode) (err error) {
 
 func getToken(line string) (string, string, error) {
 	items := strings.Split(line, " ")
-	pos := items[3]
+	pos := ""
+	if len(items) >= 4 {
+		pos = items[3]
+	}
 
 	if strings.Contains(line, " 数詞 ") {
 		return "<数量>", pos, nil
