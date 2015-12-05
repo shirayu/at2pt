@@ -1,6 +1,9 @@
 
 # at2pt: Annotated Texts to Plain Texts
 
+[![Build Status](https://travis-ci.org/shirayu/at2pt.svg?branch=master)](https://travis-ci.org/shirayu/at2pt)
+[![Coverage Status](https://coveralls.io/repos/shirayu/at2pt/badge.svg?branch=master&service=github)](https://coveralls.io/github/shirayu/at2pt?branch=master)
+[![GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](GPLv3)
 
 ## What's this
 
