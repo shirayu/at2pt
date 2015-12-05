@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/jessevdk/go-flags"
-	"github.com/shirayu/at2pt/convert"
+	"github.com/shirayu/at2pt"
 	"os"
 	"strings"
 )
@@ -36,8 +36,8 @@ type cmdOptions struct {
 	Input  string `short:"i" long:"input" description:"Input file name. - or no designation means STDIN" default:"-"`
 	Output string `short:"o" long:"output" description:"Output file name. - or no designation means STDOUT" default:"-"`
 	//     Log      bool   `long:"log" description:"Enable logging" default:"false"`
-	Mode  convert.Mode `short:"m" long:"mode" description:"Mode {0:PLAIN, 1:TOKENIZED}" default:"0"`
-	Style string       `short:"s" long:"style" description:"Input file style {KNP, MeCab, CaboCha}" default:"KNP"`
+	Mode  at2pt.Mode `short:"m" long:"mode" description:"Mode {0:PLAIN, 1:TOKENIZED}" default:"0"`
+	Style string     `short:"s" long:"style" description:"Input file style {KNP, MeCab, CaboCha}" default:"KNP"`
 }
 
 func main() {
@@ -63,11 +63,11 @@ func main() {
 		defer inf.Close()
 		defer outf.Close()
 		if strings.ToLower(opts.Style) == "knp" {
-			err = convert.ConvertKNP(inf, outf, opts.Mode)
+			err = at2pt.ConvertKNP(inf, outf, opts.Mode)
 		} else if strings.ToLower(opts.Style) == "cabocha" {
-			err = convert.ConvertCaboCha(inf, outf, opts.Mode)
+			err = at2pt.ConvertCaboCha(inf, outf, opts.Mode)
 		} else if strings.ToLower(opts.Style) == "mecab" {
-			err = convert.ConvertCaboCha(inf, outf, opts.Mode)
+			err = at2pt.ConvertCaboCha(inf, outf, opts.Mode)
 		} else {
 			fmt.Fprintf(os.Stderr, "Unknown style: %s\n", opts.Style)
 			os.Exit(1)

@@ -26,7 +26,7 @@ More options can be seen with ``at2pt -h``
 ## INSTALL
 
 ```
-go get github.com/shirayu/at2pt/at2pt
+go get github.com/shirayu/at2pt/cmd/at2pt
 ```
 
 ## Requirements

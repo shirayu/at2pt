@@ -1,4 +1,4 @@
-package convert
+package at2pt
 
 import (
 	"bufio"
