@@ -10,7 +10,7 @@ before_install:
     - go get golang.org/x/tools/cmd/cover
 
 script:
-    - $HOME/gopath/bin/goveralls -repotoken 1Cb6EjtsksbhWKh6xeu97aonFjt19xuzY
+    - $HOME/gopath/bin/goveralls -service=travis-ci
 
 install:
     - go get -d -v ./...
