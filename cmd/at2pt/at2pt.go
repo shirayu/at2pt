@@ -45,17 +45,19 @@ func main() {
 	optparser := flags.NewParser(&opts, flags.Default)
 	optparser.Name = ""
 	optparser.Usage = "-i input -o output [OPTIONS]"
-	optparser.Parse()
+	_, err := optparser.Parse()
 
 	//show help
-	//     if len(os.Args) == 1 {
-	//         optparser.WriteHelp(os.Stdout)
-	//         os.Exit(0)
-	//     }
-	for _, arg := range os.Args {
-		if arg == "-h" {
-			os.Exit(0)
+	if len(os.Args) == 1 {
+		optparser.WriteHelp(os.Stdout)
+		os.Exit(0)
+	} else if err != nil {
+		for _, arg := range os.Args {
+			if arg == "-h" {
+				os.Exit(0)
+			}
 		}
+		os.Exit(1)
 	}
 
 	inf, outf, err := getFile(opts.Input, opts.Output)
