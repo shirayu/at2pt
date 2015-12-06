@@ -32,18 +32,22 @@ func getFile(ifname string, ofname string) (inf, outf *os.File, err error) {
 }
 
 type cmdOptions struct {
-	Help   bool   `short:"h" long:"help" description:"Show this help message"`
 	Input  string `short:"i" long:"input" description:"Input file name. - or no designation means STDIN" default:"-"`
 	Output string `short:"o" long:"output" description:"Output file name. - or no designation means STDOUT" default:"-"`
 	//     Log      bool   `long:"log" description:"Enable logging" default:"false"`
 	Mode  at2pt.Mode `short:"m" long:"mode" description:"Mode {0:PLAIN, 1:TOKENIZED}" default:"0"`
 	Style string     `short:"s" long:"style" description:"Input file style {KNP, MeCab, CaboCha}" default:"KNP"`
+
+	Version bool `short:"v" long:"version" description:"Show version"`
 }
+
+var Version = "Unknown version"
+var VersionDate = ""
 
 func main() {
 	opts := cmdOptions{}
 	optparser := flags.NewParser(&opts, flags.Default)
-	optparser.Name = ""
+	optparser.Name = "at2pt"
 	optparser.Usage = "-i input -o output [OPTIONS]"
 	_, err := optparser.Parse()
 
@@ -58,6 +62,13 @@ func main() {
 			}
 		}
 		os.Exit(1)
+	} else if opts.Version {
+		if len(VersionDate) != 0 {
+			fmt.Fprintf(os.Stderr, "%s: %s on %s\n", optparser.Name, Version, VersionDate)
+		} else {
+			fmt.Fprintf(os.Stderr, "%s: %s\n", optparser.Name, Version)
+		}
+		os.Exit(0)
 	}
 
 	inf, outf, err := getFile(opts.Input, opts.Output)
