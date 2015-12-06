@@ -50,8 +50,6 @@ func ConvertKNP(infile *os.File, outfile *os.File, mode Mode) (err error) {
 		buffer.Write(myline)
 		buffer.WriteString("\n")
 	}
-
-	return err
 }
 
 func getToken(line string) (string, error) {
