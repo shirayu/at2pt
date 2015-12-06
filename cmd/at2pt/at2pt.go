@@ -41,7 +41,10 @@ type cmdOptions struct {
 	Version bool `short:"v" long:"version" description:"Show version"`
 }
 
+//Version of this program
 var Version = "Unknown version"
+
+//VersionDate is the commit date of this version
 var VersionDate = ""
 
 func main() {

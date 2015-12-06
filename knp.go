@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+//ConvertKNP processes texts in Cabocha format
 func ConvertKNP(infile *os.File, outfile *os.File, mode Mode) (err error) {
 
 	//file open
@@ -29,9 +30,9 @@ func ConvertKNP(infile *os.File, outfile *os.File, mode Mode) (err error) {
 				var myerr error
 				switch mode {
 				case TOKENIZED:
-					plainLine, myerr = ParseKNPTokenized(doc)
+					plainLine, myerr = GetTokensFromKNP(doc)
 				default:
-					plainLine, myerr = ParseKNP(doc)
+					plainLine, myerr = GetPlainTextsFromKNP(doc)
 				}
 
 				if myerr != nil {
@@ -58,12 +59,12 @@ func getToken(line string) (string, error) {
 	}
 
 	//TODO how to deal with conjugation morpheme
-	const norm_attr = "<正規化代表表記:"
-	norm_pos := strings.Index(line, norm_attr)
-	if norm_pos >= 0 {
-		tail := line[norm_pos+len(norm_attr):]
-		tail_pos := strings.Index(tail, ">")
-		return tail[:tail_pos], nil
+	const normAttr = "<正規化代表表記:"
+	normPos := strings.Index(line, normAttr)
+	if normPos >= 0 {
+		tail := line[normPos+len(normAttr):]
+		tailPos := strings.Index(tail, ">")
+		return tail[:tailPos], nil
 	}
 
 	i := strings.Index(line, " ")
@@ -84,7 +85,9 @@ func isConnectTarget(_lines *[]string, lineid int) bool {
 	}
 	return false
 }
-func ParseKNP(data string) (string, error) {
+
+//GetPlainTextsFromKNP returns plain texts from KNP format texts
+func GetPlainTextsFromKNP(data string) (string, error) {
 	lines := strings.Split(data, "\n")
 	var out bytes.Buffer
 
@@ -104,11 +107,13 @@ func ParseKNP(data string) (string, error) {
 
 	return out.String(), nil
 }
-func ParseKNPTokenized(data string) (string, error) {
+
+//GetTokensFromKNP returns tokenized words from KNP format texts
+func GetTokensFromKNP(data string) (string, error) {
 	lines := strings.Split(data, "\n")
 	var out bytes.Buffer
-	no_next_space := true
-	is_first_token_in_bunsetsu := true
+	noNextSpace := true
+	isFirstTokenInBunsetsu := true
 
 	for lineid, line := range lines {
 		if strings.HasPrefix(line, "# S-ID") { //sentence
@@ -117,12 +122,12 @@ func ParseKNPTokenized(data string) (string, error) {
 			break
 
 		} else if strings.HasPrefix(line, "* ") { //buntsetu phrase
-			is_first_token_in_bunsetsu = true
+			isFirstTokenInBunsetsu = true
 
 		} else if strings.HasPrefix(line, "+ ") { //basic phrase
-			if !is_first_token_in_bunsetsu && isConnectTarget(&lines, lineid) {
+			if !isFirstTokenInBunsetsu && isConnectTarget(&lines, lineid) {
 				out.WriteString("+")
-				no_next_space = true
+				noNextSpace = true
 			}
 
 		} else { //tokens
@@ -132,8 +137,8 @@ func ParseKNPTokenized(data string) (string, error) {
 			}
 
 			if token != "　" {
-				if no_next_space {
-					no_next_space = false
+				if noNextSpace {
+					noNextSpace = false
 				} else if strings.Contains(line, "助数辞 ") && strings.Contains(lines[lineid-1], " 数詞 ") {
 					out.WriteString("+")
 				} else {
@@ -142,7 +147,7 @@ func ParseKNPTokenized(data string) (string, error) {
 				out.WriteString(token)
 			}
 
-			is_first_token_in_bunsetsu = false
+			isFirstTokenInBunsetsu = false
 		}
 	}
 

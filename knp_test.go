@@ -62,7 +62,7 @@ func TestConvertKNP(t *testing.T) {
 
 		//get golds
 		goldf, err := os.Open(test.gold)
-		gold_reader := bufio.NewReader(goldf)
+		goldReader := bufio.NewReader(goldf)
 		if err != nil {
 			t.Errorf("Error when open the gold file: %v", err)
 			return
@@ -70,7 +70,7 @@ func TestConvertKNP(t *testing.T) {
 
 		//Check
 		for _, line := range strings.Split(gotStdout, "\n") {
-			_gold_line, _, err := gold_reader.ReadLine()
+			_goldLine, _, err := goldReader.ReadLine()
 			if err == io.EOF {
 				break
 			} else if err != nil {
@@ -78,9 +78,9 @@ func TestConvertKNP(t *testing.T) {
 				return
 			}
 
-			gold_line := string(_gold_line)
-			if line != gold_line {
-				t.Errorf("got\n[%s]\nbut want\n[%s]\n", line, gold_line)
+			goldLine := string(_goldLine)
+			if line != goldLine {
+				t.Errorf("got\n[%s]\nbut want\n[%s]\n", line, goldLine)
 			}
 		}
 	}

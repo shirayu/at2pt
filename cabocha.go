@@ -8,25 +8,26 @@ import (
 	"strings"
 )
 
+//ConvertCaboCha processes texts in Cabocha format
 func ConvertCaboCha(infile *os.File, outfile *os.File, mode Mode) (err error) {
 
 	//file open
 	r := bufio.NewReader(infile)
 
 	scanner := bufio.NewScanner(r)
-	first_token := true
+	firstToken := true
 	for scanner.Scan() {
 		line := scanner.Text()
 
 		//         if line == "EOS" {
 		if line == "EOS" || line == "EOS\t" {
 			fmt.Fprintf(outfile, "\n")
-			first_token = true
+			firstToken = true
 		} else if strings.HasPrefix(line, "* ") {
 		} else {
 			if mode == TOKENIZED {
-				if first_token {
-					first_token = false
+				if firstToken {
+					firstToken = false
 				} else {
 					fmt.Fprintf(outfile, " ")
 				}
