@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+const predrep = "<用言代表表記:"
+
 //ConvertKNP processes texts in Cabocha format
 func ConvertKNP(infile *os.File, outfile *os.File, mode Mode) (err error) {
 
@@ -30,7 +32,9 @@ func ConvertKNP(infile *os.File, outfile *os.File, mode Mode) (err error) {
 				var myerr error
 				switch mode {
 				case TOKENIZED:
-					plainLine, myerr = GetTokensFromKNP(doc)
+					plainLine, myerr = GetTokensFromKNP(doc, false)
+				case TOKENIZEDwPRED:
+					plainLine, myerr = GetTokensFromKNP(doc, true)
 				default:
 					plainLine, myerr = GetPlainTextsFromKNP(doc)
 				}
@@ -109,11 +113,12 @@ func GetPlainTextsFromKNP(data string) (string, error) {
 }
 
 //GetTokensFromKNP returns tokenized words from KNP format texts
-func GetTokensFromKNP(data string) (string, error) {
+func GetTokensFromKNP(data string, pred bool) (string, error) {
 	lines := strings.Split(data, "\n")
 	var out bytes.Buffer
 	noNextSpace := true
 	isFirstTokenInBunsetsu := true
+	skipTokens := false
 
 	for lineid, line := range lines {
 		if strings.HasPrefix(line, "# S-ID") { //sentence
@@ -125,12 +130,35 @@ func GetTokensFromKNP(data string) (string, error) {
 			isFirstTokenInBunsetsu = true
 
 		} else if strings.HasPrefix(line, "+ ") { //basic phrase
+			skipTokens = false //reset
+
 			if !isFirstTokenInBunsetsu && isConnectTarget(&lines, lineid) {
 				out.WriteString("+")
 				noNextSpace = true
+			} else if pred {
+				position := strings.Index(line, predrep)
+				if position != -1 {
+					if noNextSpace {
+						noNextSpace = false
+					} else {
+						out.WriteString(" ")
+					}
+
+					skipTokens = true
+					tail := line[position+len(predrep):]
+					tp := strings.Index(tail, ">")
+					rep := tail[:tp]
+					out.WriteString(rep)
+					noNextSpace = false
+				}
 			}
 
 		} else { //tokens
+			isFirstTokenInBunsetsu = false
+			if skipTokens {
+				continue
+			}
+
 			token, err := getToken(line)
 			if err != nil {
 				return lines[0], err
@@ -147,7 +175,6 @@ func GetTokensFromKNP(data string) (string, error) {
 				out.WriteString(token)
 			}
 
-			isFirstTokenInBunsetsu = false
 		}
 	}
 

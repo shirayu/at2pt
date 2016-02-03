@@ -8,4 +8,6 @@ const (
 	PLAIN Mode = iota
 	//TOKENIZED outputs tokenized words
 	TOKENIZED
+	//TOKENIZEDwPRED outputs tokenized words with normalized predicates
+	TOKENIZEDwPRED
 )

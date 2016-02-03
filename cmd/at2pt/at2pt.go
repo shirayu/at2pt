@@ -35,7 +35,7 @@ type cmdOptions struct {
 	Input  string `short:"i" long:"input" description:"Input file name. - or no designation means STDIN" default:"-"`
 	Output string `short:"o" long:"output" description:"Output file name. - or no designation means STDOUT" default:"-"`
 	//     Log      bool   `long:"log" description:"Enable logging" default:"false"`
-	Mode  at2pt.Mode `short:"m" long:"mode" description:"Mode {0:PLAIN, 1:TOKENIZED}" default:"0"`
+	Mode  at2pt.Mode `short:"m" long:"mode" description:"Mode {0:PLAIN, 1:TOKENIZED, 2:TOKENIZEDwPRED}" default:"0"`
 	Style string     `short:"s" long:"style" description:"Input file style {KNP, MeCab, CaboCha}" default:"KNP"`
 
 	Version bool `short:"v" long:"version" description:"Show version"`
