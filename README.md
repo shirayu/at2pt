@@ -2,7 +2,7 @@
 # at2pt: Annotated Texts to Plain Texts
 
 [![Build Status](https://travis-ci.org/shirayu/at2pt.svg?branch=master)](https://travis-ci.org/shirayu/at2pt)
-[![Coverage Status](https://coveralls.io/repos/shirayu/at2pt/badge.svg?branch=master&service=github)](https://coveralls.io/github/shirayu/at2pt?branch=master)
+[![codecov.io](https://codecov.io/github/shirayu/at2pt/coverage.svg?branch=master)](https://codecov.io/github/shirayu/at2pt?branch=master)
 [![GoDoc](https://godoc.org/github.com/shirayu/at2pt?status.svg)](https://godoc.org/github.com/shirayu/at2pt)
 [![GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](GPLv3)
 
