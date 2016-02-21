@@ -9,6 +9,8 @@ before_install:
     - go get golang.org/x/tools/cmd/vet
     - go get github.com/golang/lint/golint
     - pip install --user codecov
+    - go get -v github.com/mitchellh/gox #For relase build
+    - go get -v github.com/tcnksm/ghr #For github relase
 
 install:
     - go get -d -v ./...
@@ -21,3 +23,15 @@ script:
 
 after_success:
     - codecov
+    - if [ -z "${TRAVIS_TAG}" ] ; then exit 0; fi
+    - rm -rf goxdist
+    - |
+      gox \
+      -output "goxdist/at2pt_{{.OS}}_{{.Arch}}_${TRAVIS_TAG}/{{.Dir}}" \
+      -ldflags "-X \"main.Version=${TRAVIS_TAG} `git log ${TRAVIS_TAG} -1 --format='(%h)'`\" -X main.VersionDate=`git log ${TRAVIS_TAG} -1 --format='%cd' --date=short` " \
+      github.com/shirayu/at2pt/cmd/at2pt/
+    - mkdir -p ghr_uploads
+    - cd goxdist
+    - find . -mindepth 1 -type d | xargs -i bash -c 'zip -r ../ghr_uploads/{}.zip {}'
+    - cd ..
+    - ghr --username shirayu --token ${GITHUB_TOKEN} ${TRAVIS_TAG} ghr_uploads

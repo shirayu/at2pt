@@ -26,9 +26,7 @@ More options can be seen with ``at2pt -h``
 
 ## INSTALL
 
-```
-go get github.com/shirayu/at2pt/cmd/at2pt
-```
+Download from [github release page](https://github.com/shirayu/at2pt/releases) or ``go get github.com/shirayu/at2pt/cmd/at2pt``
 
 ## Requirements
 - You should use UTF-8 texts for input
