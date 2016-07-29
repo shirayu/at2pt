@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/jessevdk/go-flags"
-	"github.com/shirayu/at2pt"
+	"log"
 	"os"
 	"strings"
+
+	"github.com/jessevdk/go-flags"
+	"github.com/shirayu/at2pt"
 )
 
 func getFile(ifname string, ofname string) (inf, outf *os.File, err error) {
@@ -59,12 +61,12 @@ func main() {
 		optparser.WriteHelp(os.Stdout)
 		os.Exit(0)
 	} else if err != nil {
-		for _, arg := range os.Args {
-			if arg == "-h" {
-				os.Exit(0)
-			}
+		if e, ok := err.(*flags.Error); !ok {
+			log.Fatalf("Expected flags.Error, but got %T", err)
+		} else if e.Type == flags.ErrHelp {
+			os.Exit(0)
 		}
-		os.Exit(1)
+		log.Fatalf("%s\n", err)
 	} else if opts.Version {
 		if len(VersionDate) != 0 {
 			fmt.Fprintf(os.Stderr, "%s: %s on %s\n", optparser.Name, Version, VersionDate)
