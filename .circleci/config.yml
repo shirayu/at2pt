@@ -9,7 +9,7 @@ jobs:
     steps:
         - checkout
 
-        - run: 
+        - run:
               name: Preparation
               command: |
                   echo 'export PATH=${GOPATH}/bin/:${PATH}' >> $BASH_ENV
@@ -19,8 +19,8 @@ jobs:
                   curl -s https://codecov.io/bash -o codecov.sh
                   go get -v github.com/mitchellh/gox #For release build
                   go get -v github.com/tcnksm/ghr #For GitHub release
-       
-        - run: 
+
+        - run:
               name: Lint
               command: |
                   go vet ./...
@@ -36,7 +36,7 @@ jobs:
      - image: circleci/golang:1.11.2
     steps:
       - checkout
-      - run: 
+      - run:
             name: Gox
             command: |
                 if [ -z "${CIRCLE_TAG}" ] ; then exit 0; fi
