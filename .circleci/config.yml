@@ -1,0 +1,62 @@
+version: 2
+jobs:
+  build:
+    environment:
+      - GOPATH: /home/circleci/go
+    docker:
+      - image: circleci/golang:1.11.2
+    working_directory: /home/circleci/go/src/github.com/shirayu/at2pt
+    steps:
+        - checkout
+
+        - run: 
+              name: Preparation
+              command: |
+                  echo 'export PATH=${GOPATH}/bin/:${PATH}' >> $BASH_ENV
+                  go get -v -t -d ./...
+                  go get golang.org/x/tools/cmd/cover
+                  go get github.com/golang/lint/golint
+                  curl -s https://codecov.io/bash -o codecov.sh
+                  go get -v github.com/mitchellh/gox #For release build
+                  go get -v github.com/tcnksm/ghr #For GitHub release
+       
+        - run: 
+              name: Lint
+              command: |
+                  go vet ./...
+                  test -z "$(golint ./... | tee /dev/stderr)"
+                  go build -v ./...
+                  go test -coverprofile=coverage.txt -covermode=atomic
+                  bash codecov.sh
+
+  deploy:
+    environment:
+      - GOPATH: /home/circleci/go
+    docker:
+     - image: circleci/golang:1.11.2
+    steps:
+      - checkout
+      - run: 
+            name: Gox
+            command: |
+                if [ -z "${CIRCLE_TAG}" ] ; then exit 0; fi
+                rm -rf goxdist
+                |
+                gox \
+                -output "goxdist/at2pt_{{.OS}}_{{.Arch}}_${CIRCLE_TAG}/{{.Dir}}" \
+                -ldflags "-X \"main.Version=${CIRCLE_TAG} `git log ${CIRCLE_TAG} -1 --format='(%h)'`\" -X main.VersionDate=`git log ${CIRCLE_TAG} -1 --format='%cd' --date=short` " \
+                github.com/shirayu/at2pt/cmd/at2pt/
+                mkdir -p ghr_uploads
+                cd goxdist
+                find . -mindepth 1 -type d | xargs -i bash -c 'zip -r ../ghr_uploads/{}.zip {}'
+                cd ..
+                ghr --username shirayu --token ${GITHUB_TOKEN} ${CIRCLE_TAG} ghr_uploads
+
+workflows:
+    version: 2
+    build-deploy:
+        jobs:
+            - build
+            - deploy: # 'build' then 'deploy'
+                requires:
+                    - build
